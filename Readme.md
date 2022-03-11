@@ -1,6 +1,5 @@
 LocalStack is a cloud service emulator, you can apply through Terraform. You have a example here using Terraform, API NodeJS to send message on the queue and an nodejs app to receive message from the queue, in addition to this, there is a docker-compose file to deploy LocalStack and NodeJS app on local.
 
-# Deploy
 ```sh
 aws configure set region eu-west-1 --profile jesusmonda-localstack
 aws configure set aws_access_key_id test --profile jesusmonda-localstack
