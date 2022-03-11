@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  localstack:
+    container_name: "localstack"
+    image: localstack/localstack
+    ports:
+      - "4566:4566"            # LocalStack Edge Proxy
+    environment:
+      - SERICES=sqs
+      - DATA_DIR=/tmp/localstack
+      - PERSIST_ALL=true
+    volumes:
+      - "../tmp/localstack:/tmp/localstack"
+
+  users:
+    container_name: "users"
+    build:
+      context: ./users
+      dockerfile: Dockerfile
+    ports:
+      - "8080:3000"
+    environment:
+      - QUEUE_URL=http://localstack:4566/000000000000/jesusmonda-local.fifo
+      - AWS_ENDPOINT=http://localstack:4566 # undefined on prod
+      - AWS_PROFILE=jesusmonda-localstack # undefined on prod
+      - AWS_REGION=eu-west-1 # undefined on prod
+    volumes:
+      - "./users:/app"
+      - "/c/Users/jsoc/.aws:/root/.aws" # To load aws config
+
+  queues:
+    container_name: "queues"
+    build:
+      context: ./queues
+      dockerfile: Dockerfile
+    environment:
+      - QUEUE_URL=http://localstack:4566/000000000000/jesusmonda-local.fifo
+      - AWS_ENDPOINT=http://localstack:4566 # undefined on prod
+      - AWS_PROFILE=jesusmonda-localstack # undefined on prod
+      - AWS_REGION=eu-west-1 # undefined on prod
+    volumes:
+      - "./queues:/app"
+      - "/c/Users/jsoc/.aws:/root/.aws" # To load aws config
